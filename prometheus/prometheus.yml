@@ -16,4 +16,5 @@ scrape_configs:
   dns_sd_configs:
     - names: ['backend']
       port: 8000
+      type: A
       refresh_interval: 10s
