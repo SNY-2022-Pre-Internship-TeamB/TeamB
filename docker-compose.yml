@@ -39,7 +39,7 @@ services:
     volumes:
       - '/:/host:ro,rslave'
     command:
-      - '--path.roofts=/host'
+      - '--path.rootfs=/host'
     network_mode: host
     pid: host
     restart: unless-stopped
