@@ -30,3 +30,16 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     restart: always
     privileged: true
+
+  node_exporter:
+    container_name: node_exporter
+    image: quay.io/prometheus/node-exporter:latest
+    ports:
+      - "9100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+    command:
+      - '--path.roofts=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
