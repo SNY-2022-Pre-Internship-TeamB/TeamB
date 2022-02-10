@@ -28,7 +28,7 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-    restart: always
+    restart: on-failure
     privileged: true
 
   node_exporter:
@@ -42,5 +42,20 @@ services:
       - '--path.rootfs=/host'
     network_mode: host
     pid: host
-    restart: unless-stopped
+    restart: on-failure
     privileged: true
+
+  prometheus:
+    container_name: prometheus
+    image: quay.io/prometheus/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    depends_on:
+      - backend
+      - cAdvisor
+      - node_exporter
+    restart: on-failure
