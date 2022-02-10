@@ -40,8 +40,6 @@ services:
       - '/:/host:ro,rslave'
     command:
       - '--path.rootfs=/host'
-    network_mode: host
-    pid: host
     restart: on-failure
     privileged: true
 
