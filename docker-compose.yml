@@ -43,3 +43,4 @@ services:
     network_mode: host
     pid: host
     restart: unless-stopped
+    privileged: true
