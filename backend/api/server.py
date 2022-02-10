@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 from model import *
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 def test_func():
