@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from test import *
+from model import *
 
 app = FastAPI()
 
@@ -8,7 +8,7 @@ def test_func():
     return "Test Func"
 
 @app.post("/nums/")
-async def policy_num(item : Test):
+async def policy_num(item : policy_name):
     test_dict = item.dict()
     if item.u_region == "서울":
         test_dict.update({"정책 번호" : "R0001"})
