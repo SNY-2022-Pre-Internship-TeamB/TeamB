@@ -1,10 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
+from pydantic import Field
 
-class policy_name(BaseModel):
-    u_region : str
-    u_age : int
-    u_policy_type : str
-
-class policy_detail(BaseModel):
-    policy_id : str
+def ResponseModel(data):
+    return {
+        "data" : [data]
+    }
