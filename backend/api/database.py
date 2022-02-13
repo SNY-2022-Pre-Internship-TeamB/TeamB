@@ -1,10 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
-#MONGODB_URL = "mongodb://3.39.15.18:27017"
-#client = AsyncIOMotorClient(MONGODB_URL)
-#database = client.SNdb
-#policy_collection = database.get_collection("resultAll")
-
 async def db_connection():
     MONGODB_URL = "mongodb://3.39.15.18:27017"
     client = AsyncIOMotorClient(MONGODB_URL)
@@ -14,6 +9,7 @@ async def db_connection():
 
 def policy_name_helper(policy) -> dict:
     return {
+        "policy_id" : policy["policy_id"],
         "p_name" : policy["p_name"]
     }
 
@@ -38,12 +34,20 @@ async def retrieve_policies(u_region, u_age, policy_type) -> dict:
     policies = []
     condition = {
         "p_region" : u_region,
-        "p_age" : {"$lte" : u_age},
+        "p_age_max" : {"$gte" : u_age},
         "policy_type" : policy_type
     }
     async for policy in policy_collection.find(condition):
         policies.append(policy_name_helper(policy))
-    print(policies)
+
+    return policies
+
+async def retrieve_all_policies() -> dict:
+    policy_collection = await db_connection()
+    policies = []
+    async for policy in policy_collection.find():
+        policies.append(policy_name_helper(policy))
+
     return policies
 
 async def retrieve_details(policy_id) -> dict:
@@ -55,4 +59,11 @@ async def retrieve_details(policy_id) -> dict:
     async for detail in policy_collection.find(condition):
         details.append(policy_detail_helper(detail))
 
+    return details
+
+async def retrieve_all_details() -> dict:
+    policy_collection = await db_connection()
+    details = []
+    async for detail in policy_collection.find():
+        details.append(policy_detail_helper(detail))
     return details
