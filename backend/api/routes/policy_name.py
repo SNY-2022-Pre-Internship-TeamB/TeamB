@@ -5,11 +5,17 @@ from fastapi import Query
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-from database import retrieve_policies
+from database import retrieve_policies, retrieve_all_policies
 
 router = APIRouter()
 
-@router.get("", response_description = "Get Policy Name")
+@router.get("", response_description = "모든 정책명 조회")
+async def get_all_policy_name():
+    policies = await retrieve_all_policies()
+    if policies:
+        return policies
+
+@router.get("/", response_description = "사용자의 정보에 해당하는 정책명 조회")
 async def get_policy_name(u_region : str = Query(None, description = "사용자의 지역"),
                           u_age : int = Query(None, description = "사용자의 나이"),
                           policy_type : str = Query(None, description = "사용자가 선택한 정책 유형")):
