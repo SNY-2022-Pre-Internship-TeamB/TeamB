@@ -1,9 +1,16 @@
-import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
 
-MONGODB_URL = "mongodb://3.39.15.18:27017"
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
-database = client.SNdb
-policy_collection = database.get_collection("resultAll")
+#MONGODB_URL = "mongodb://3.39.15.18:27017"
+#client = AsyncIOMotorClient(MONGODB_URL)
+#database = client.SNdb
+#policy_collection = database.get_collection("resultAll")
+
+async def db_connection():
+    MONGODB_URL = "mongodb://3.39.15.18:27017"
+    client = AsyncIOMotorClient(MONGODB_URL)
+    database = client.SNdb
+    policy_collection = database.get_collection("resultAll")
+    return policy_collection
 
 def policy_name_helper(policy) -> dict:
     return {
@@ -27,6 +34,7 @@ def policy_detail_helper(detail) -> dict:
     }
 
 async def retrieve_policies(u_region, u_age, policy_type) -> dict:
+    policy_collection = await db_connection()
     policies = []
     condition = {
         "p_region" : u_region,
@@ -39,6 +47,7 @@ async def retrieve_policies(u_region, u_age, policy_type) -> dict:
     return policies
 
 async def retrieve_details(policy_id) -> dict:
+    policy_collection = await db_connection()
     details = []
     condition = {
         "policy_id" : policy_id
