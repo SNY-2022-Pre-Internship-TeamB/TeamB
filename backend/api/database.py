@@ -33,7 +33,7 @@ async def retrieve_policies(u_region, u_age, policy_type) -> dict:
     policy_collection = await db_connection()
     policies = []
     condition = {
-        "p_region" : u_region,
+        "$or" : [{"p_region" : u_region}, {"p_region" : "중앙부처"}],
         "p_age_max" : {"$gte" : u_age},
         "policy_type" : policy_type
     }
