@@ -15,8 +15,8 @@ async def get_all_policy_detail():
     if details:
         return details
 
-@router.get("/", response_description = "해당하는 정책번호의 상세정보 조회")
-async def get_policy_detail(policy_number : str = Query(None, description = "정책 번호")):
-    details = await retrieve_details(policy_number)
+@router.get("/{policy_name}", response_description = "해당하는 정책의 상세정보 조회")
+async def get_policy_detail(policy_name : str = Query(..., description = "정책명")):
+    details = await retrieve_details(policy_name)
     if details:
         return details

@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers = ["*"]
 )
 
-app.include_router(PolicyNameRouter, tags = ["Policy Name"], prefix = "/policy")
-app.include_router(PolicyDetailRouter, tags = ["Policy Detail"], prefix = "/detail")
+app.include_router(PolicyNameRouter, tags = ["정책명 조회"], prefix = "/policies")
+app.include_router(PolicyDetailRouter, tags = ["정책 세부내용 조회"], prefix = "/details")
 
 Instrumentator().instrument(app).expose(app)

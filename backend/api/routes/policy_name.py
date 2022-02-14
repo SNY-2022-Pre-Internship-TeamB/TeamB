@@ -15,10 +15,10 @@ async def get_all_policy_name():
     if policies:
         return policies
 
-@router.get("/", response_description = "사용자의 정보에 해당하는 정책명 조회")
-async def get_policy_name(u_region : str = Query(None, description = "사용자의 지역"),
-                          u_age : int = Query(None, description = "사용자의 나이"),
-                          policy_type : str = Query(None, description = "사용자가 선택한 정책 유형")):
+@router.get("/users", response_description = "사용자의 정보에 해당하는 정책명 조회")
+async def get_policy_name(u_region : str = Query(..., description = "사용자의 지역"),
+                          u_age : int = Query(..., description = "사용자의 나이"),
+                          policy_type : str = Query(..., description = "사용자가 선택한 정책 유형")):
     policies = await retrieve_policies(u_region, u_age, policy_type)
     if policies:
         return policies

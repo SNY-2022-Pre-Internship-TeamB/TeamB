@@ -50,11 +50,11 @@ async def retrieve_all_policies() -> dict:
 
     return policies
 
-async def retrieve_details(policy_id) -> dict:
+async def retrieve_details(p_name) -> dict:
     policy_collection = await db_connection()
     details = []
     condition = {
-        "policy_id" : policy_id
+        "p_name" : p_name
     }
     async for detail in policy_collection.find(condition):
         details.append(policy_detail_helper(detail))
@@ -66,4 +66,5 @@ async def retrieve_all_details() -> dict:
     details = []
     async for detail in policy_collection.find():
         details.append(policy_detail_helper(detail))
+
     return details
