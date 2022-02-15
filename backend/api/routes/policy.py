@@ -13,12 +13,15 @@ router = APIRouter()
 
 @router.get("", responses = {200 : {"model" : PolicySchema},
                              404 : {"model" : ErrorResponseModel}})
-async def get_policy(u_region : Optional[str] = Query(None, description = "사용자의 지역"),
-                          u_age : Optional[int] = Query(None, description = "사용자의 나이"),
-                          policy_type : Optional[str] = Query(None, description = "사용자가 선택한 정책 유형")):
+async def get_policy(u_region : Optional[str] = Query(None, description = "사용자의 지역 [Optional]"),
+                     u_age : Optional[int] = Query(None, description = "사용자의 나이 [Optional]"),
+                     policy_type : Optional[str] = Query(None, description = "사용자가 선택한 정책 유형 [Optional]"),
+                     p_name : Optional[str] = Query(None, description = "정책의 이름 [Optional]")):
 
     if u_region and u_age and policy_type:
-        policies = await retrieve_policies(u_region, u_age, policy_type)
+        policies = await retrieve_policies_by_user(u_region, u_age, policy_type)
+    elif p_name:
+        policies = await retrieve_policies_by_name(p_name)
     else:
         policies = await retrieve_all_policies()
 
