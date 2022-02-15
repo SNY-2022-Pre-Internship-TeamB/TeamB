@@ -1,10 +1,9 @@
 import sys
 import os
-from fastapi import APIRouter
-from fastapi import Query
+from fastapi import APIRouter, Query
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from database import retrieve_policies, retrieve_all_policies
+from database import *
 
 router = APIRouter()
 
