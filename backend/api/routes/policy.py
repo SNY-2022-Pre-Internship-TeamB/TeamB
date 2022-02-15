@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import Optional
 from fastapi import APIRouter, Body, status, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from fastapi import Query
@@ -12,8 +13,14 @@ router = APIRouter()
 
 @router.get("", responses = {200 : {"model" : PolicySchema},
                              404 : {"model" : ErrorResponseModel}})
-async def get_all_policy():
-    policies = await retrieve_all_policies()
+async def get_policy(u_region : Optional[str] = Query(None, description = "사용자의 지역"),
+                          u_age : Optional[int] = Query(None, description = "사용자의 나이"),
+                          policy_type : Optional[str] = Query(None, description = "사용자가 선택한 정책 유형")):
+
+    if u_region and u_age and policy_type:
+        policies = await retrieve_policies(u_region, u_age, policy_type)
+    else:
+        policies = await retrieve_all_policies()
 
     if policies:
         return okResponse(200, policies)
