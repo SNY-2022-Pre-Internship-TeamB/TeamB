@@ -1,26 +1,48 @@
 import sys
 import os
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Body, status, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from fastapi import Query
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from database import retrieve_all_policies, add_policy
-from model import PolicySchema, AsyncResponseModel, AsyncResponse
+from database import *
+from model import *
 
 router = APIRouter()
 
-@router.get("")
-async def get_all_policy(response : Response):
+@router.get("", responses = {200 : {"model" : PolicySchema},
+                             404 : {"model" : ErrorResponseModel}})
+async def get_all_policy():
     policies = await retrieve_all_policies()
 
     if policies:
-        response.status_code = status.HTTP_200_OK
-        return policies
+        return okResponse(200, policies)
+    else:
+        return errorResponse(404, "There are no policies")
 
 @router.post("", responses = {202 : {"model" : AsyncResponseModel}})
-async def post_policy(policy : PolicySchema):
+async def post_policy(background_tasks : BackgroundTasks, policy : PolicySchema = Body(...)):
     policy = jsonable_encoder(policy)
-    add_policy(policy)
+    background_tasks.add_task(add_policy, policy)
 
-    return AsyncResponse(202, "GET", "http://localhost:8000/policies/{}/details".format(policy['policy_id']))
+    return asyncResponse(202, "GET", "http://localhost:8000/policies/{}/details".format(policy['policy_id']))
+
+@router.delete("", status_code = status.HTTP_204_NO_CONTENT, response_description = "Successfully deleted")
+async def delete_policy(background_tasks : BackgroundTasks):
+    background_tasks.add_task(delete_all_policy)
+
+@router.put("")
+async def put_policy():
+    pass
+
+@router.patch("")
+async def patch_policy():
+    pass
+
+@router.options("")
+async def options_policy():
+    pass
+
+@router.head("")
+async def head_policy():
+    pass
