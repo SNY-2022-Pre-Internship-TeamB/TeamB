@@ -1,6 +1,45 @@
 from pydantic import BaseModel, Field
 from fastapi.responses import JSONResponse
 
+class AsyncResponseModel(BaseModel):
+    method : str = Field()
+    link : str = Field()
+
+    class Config:
+        schema_extra = {
+            "example" : {
+                "message" : "To access the data, use below method",
+                "method" : "GET",
+                "link" : "href"
+            }
+        }
+
+def asyncResponse(status_code, method, link):
+    return JSONResponse(status_code = status_code,
+                        content = {
+                            "message": "To access the data, use below method",
+                            "method" : method,
+                            "link" : link
+                        })
+
+def okResponse(status_code, data):
+    return JSONResponse(status_code = status_code,
+                        content = data)
+
+class ErrorResponseModel(BaseModel):
+    message : str = Field()
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "message": "error"
+            }
+        }
+
+def errorResponse(status_code, message):
+    return JSONResponse(status_code = status_code,
+                        content = message)
+
 class PolicySchema(BaseModel):
     p_name: str = Field()
     policy_id: str = Field()
@@ -62,43 +101,3 @@ class PolicySchema(BaseModel):
                 "a_site2": "사업 관련 참고 사이트2"
             }
         }
-
-class AsyncResponseModel(BaseModel):
-    method : str = Field()
-    link : str = Field()
-
-    class Config:
-        schema_extra = {
-            "example" : {
-                "message" : "To access the data, use below method",
-                "method" : "GET",
-                "link" : "href"
-            }
-        }
-
-def AsyncResponse(status_code, method, link):
-    return JSONResponse(status_code = status_code,
-                        content = {
-                            "message": "To access the data, use below method",
-                            "method" : method,
-                            "link" : link
-                        })
-
-def ResponseModel(data, message):
-    return {
-        "data" : [data],
-        "message" : message
-    }
-
-def JSONResponseModel(status_code, message):
-    return JSONResponse(status_code = status_code,
-                        content = {
-                            "message" : message
-                        })
-
-
-def ErrorResponseModel(message):
-    return {
-        "error" : "error",
-        "message" : message
-    }
