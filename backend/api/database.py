@@ -64,7 +64,7 @@ async def retrieve_all_policies() -> dict:
     policy_collection = db_connection()
     policies = []
     async for policy in policy_collection.find():
-        policies.append(policy_helper(policy))
+        policies.append(policy_name_helper(policy))
 
     return policies
 
@@ -89,18 +89,18 @@ async def retrieve_policies_by_user(u_region, u_age, policy_type) -> dict:
 
     return policies
 
-async def retrieve_policies_by_name(p_name) -> dict:
+async def retrieve_details_by_name(p_name) -> dict:
     policy_collection = db_connection()
-    policies = []
+    details = []
     condition = {
         "p_name" : p_name
     }
-    async for policy in policy_collection.find(condition):
-        policies.append(policy_helper(policy))
+    async for detail in policy_collection.find(condition):
+        details.append(policy_helper(detail))
 
-    return policies
+    return details
 
-async def retrieve_details(policy_id) -> dict:
+async def retrieve_details_by_id(policy_id) -> dict:
     policy_collection = db_connection()
     details = []
     condition = {
