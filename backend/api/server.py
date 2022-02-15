@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 from routes.policy import router as PolicyRouter
-from routes.policy_name import router as PolicyNameRouter
 from routes.policy_details import router as PolicyDetailRouter
 
 app = FastAPI()
@@ -16,7 +15,6 @@ app.add_middleware(
 )
 
 app.include_router(PolicyRouter, tags = ["정책 조회"], prefix = "/policies")
-app.include_router(PolicyNameRouter, tags = ["정책명 조회"], prefix = "/policies/{policy_id}/names")
-app.include_router(PolicyDetailRouter, tags = ["정책 세부내용 조회"], prefix = "/policies/{policy_id}/details")
+app.include_router(PolicyDetailRouter, tags = ["정책 세부내용 조회"], prefix = "/policies/{policy_id}")
 
 Instrumentator().instrument(app).expose(app)
