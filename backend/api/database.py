@@ -1,5 +1,4 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from bson.objectid import ObjectId
 
 def db_connection():
     MONGODB_URL = "mongodb://3.39.15.18:27017"
@@ -72,6 +71,10 @@ async def retrieve_all_policies() -> dict:
 def add_policy(policy_data : dict) -> dict:
     policy_collection = db_connection()
     policy_collection.insert_one(policy_data)
+
+def delete_all_policy():
+    policy_collection = db_connection()
+    policy_collection.remove({})
 
 async def retrieve_policies(u_region, u_age, policy_type) -> dict:
     policy_collection = db_connection()
