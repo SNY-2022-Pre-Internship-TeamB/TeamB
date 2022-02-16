@@ -101,3 +101,15 @@ class PolicySchema(BaseModel):
                 "a_site2": "사업 관련 참고 사이트2"
             }
         }
+
+class PolicyNameSchema(BaseModel):
+    p_name: str = Field(...)
+    policy_id: str = Field(...)
+
+    class Config:
+        schema_extra = {
+            "example" : {
+                "p_name": "정책 이름",
+                "policy_id": "정책 번호",
+            }
+        }
