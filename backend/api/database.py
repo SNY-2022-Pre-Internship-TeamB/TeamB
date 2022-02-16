@@ -44,22 +44,6 @@ def policy_name_helper(policy) -> dict:
         "p_name" : policy["p_name"]
     }
 
-def policy_detail_helper(detail) -> dict:
-    return {
-        "introduction" : detail["introduction"],
-        "policy_type" : detail["policy_type"],
-        "support" : detail["support"],
-        "p_region_income" : detail["p_region_income"],
-        "detail": detail["detail"],
-        "restriction": detail["restriction"],
-        "procedure": detail["procedure"],
-        "announcement": detail["announcement"],
-        "m_site": detail["m_site"],
-        "document": detail["document"],
-        "etc": detail["etc"],
-        "a_name": detail["a_name"]
-    }
-
 async def retrieve_all_policies() -> dict:
     policy_collection = db_connection()
     policies = []
@@ -67,14 +51,6 @@ async def retrieve_all_policies() -> dict:
         policies.append(policy_name_helper(policy))
 
     return policies
-
-def add_policy(policy_data : dict) -> dict:
-    policy_collection = db_connection()
-    policy_collection.insert_one(policy_data)
-
-def delete_all_policy():
-    policy_collection = db_connection()
-    policy_collection.remove({})
 
 async def retrieve_policies_by_user(u_region, u_age, policy_type) -> dict:
     policy_collection = db_connection()
@@ -88,6 +64,18 @@ async def retrieve_policies_by_user(u_region, u_age, policy_type) -> dict:
         policies.append(policy_name_helper(policy))
 
     return policies
+
+async def add_policy(policy_data : dict) -> dict:
+    policy_collection = db_connection()
+    policy_collection.insert_one(policy_data)
+
+async def delete_policy_by(policy_data : dict):
+    policy_collection = db_connection()
+    condition = {
+        "p_name" : policy_data['p_name'],
+        "policy_id" : policy_data['policy_id']
+    }
+    policy_collection.delete_many(condition)
 
 async def retrieve_details_by_name(p_name) -> dict:
     policy_collection = db_connection()
