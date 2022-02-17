@@ -13,7 +13,7 @@ from model import *
 router = APIRouter()
 
 @router.get("", responses = {200 : {"model" : PolicyNameSchema},
-                             404 : {"model" : ErrorResponseModel}})
+                             404 : {}})
 async def get_policy(u_region : Optional[str] = Query(None, description = "사용자의 지역"),
                      u_age : Optional[int] = Query(None, description = "사용자의 나이"),
                      policy_type : Optional[str] = Query(None, description = "사용자가 선택한 정책 유형")):
@@ -26,7 +26,7 @@ async def get_policy(u_region : Optional[str] = Query(None, description = "사�
     if policies:
         return okResponse(200, policies)
     else:
-        return errorResponse(404, "There are no policies")
+        return JSONResponse(status_code = 404)
 
 @router.post("", responses = {202 : {"model" : AsyncResponseModel}})
 async def post_policy(background_tasks : BackgroundTasks, policy : PolicyNameSchema = Body(...)):
@@ -40,19 +40,21 @@ async def delete_policy(background_tasks : BackgroundTasks, policy : PolicyNameS
     policy = jsonable_encoder(policy)
     background_tasks.add_task(delete_policy_by, policy)
 
-    return
+    return JSONResponse(status_code = 204)
 
-@router.put("")
-async def put_policy():
-    pass
+@router.put("", responses = {201 : {}, 404 : {}})
+async def put_policy(policy : PolicyNameSchema = Body(...)):
+    policy = jsonable_encoder(policy)
+    updated = await update_policy(policy)
 
-@router.patch("")
-async def patch_policy():
-    pass
+    if updated:
+        return JSONResponse(status_code = 201)
+    else:
+        return JSONResponse(status_code = 404)
 
 @router.options("")
 async def options_policy(response : Response):
-    response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS, HEAD, PATCH"
+    response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS, HEAD"
 
 @router.head("", responses = {200 : {},
                               404 : {}})
