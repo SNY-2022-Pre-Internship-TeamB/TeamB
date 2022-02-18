@@ -16,4 +16,5 @@ app.add_middleware(
 
 app.include_router(PolicyRouter, tags = ["정책명 조회"], prefix = "/policies")
 app.include_router(PolicyDetailByIdRouter, tags = ["정책 번호 또는 이름으로 세부내용 조회"], prefix = "/policies/{policy}")
+
 Instrumentator().instrument(app).expose(app)
