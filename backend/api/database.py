@@ -136,3 +136,25 @@ async def update_policy(policy_data : dict):
             return True
         return False
 
+async def patch_policy_by(policy : str, policy_data : dict):
+    policy_collection = db_connection()
+    condition_update = {
+        "$set": policy_data
+    }
+    if policy.startswith('R'):
+        condition_id = {
+            "policy_id": policy
+        }
+        policy = await policy_collection.find_one(condition_id)
+        if policy:
+            policy_collection.update_one(condition_id, condition_update)
+            return True
+    else:
+        condition_name = {
+            "p_name": policy
+        }
+        policy = await policy_collection.find_one(condition_name)
+        if policy:
+            policy_collection.update_one(condition_name, condition_update)
+            return True
+        return False
