@@ -59,10 +59,26 @@ async def head_policy(policy : str = Path(..., description = "정책 번호 또�
     else:
         return JSONResponse(status_code = 404)
 
-@router.put("")
-async def put_policy(background_tasks : BackgroundTasks, policy : str = Path(..., description = "정책 번호 또는 이름")):
-    pass
+@router.put("", responses = {201 : {},
+                              404 : {}})
+async def put_policy(background_tasks : BackgroundTasks, policy : str = Path(..., description = "정책 번호 또는 이름"),
+                     policy_post : PolicySchema = Body(...)):
+    policy_post = jsonable_encoder(policy_post)
+    updated = await update_policy(policy_post)
 
-@router.patch("")
-async def patch_policy(policy : str = Path(..., description = "정책 번호 또는 이름")):
-    pass
+    if updated:
+        return JSONResponse(status_code=201)
+    else:
+        return JSONResponse(status_code=404)
+
+@router.patch("", responses = {202 : {},
+                              404 : {}})
+async def patch_policy(policy : str = Path(..., description = "정책 번호 또는 이름"),
+                       policy_data = Body(...)):
+    policy_data = jsonable_encoder(policy_data)
+    updated = await patch_policy_by(policy, policy_data)
+
+    if updated:
+        return asyncResponse(202, "GET", "http://localhost:8000/policies/{}".format(policy))
+    else:
+        return JSONResponse(status_code=404)
