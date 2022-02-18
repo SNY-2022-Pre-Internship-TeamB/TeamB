@@ -65,18 +65,6 @@ async def retrieve_policies_by_user(u_region, u_age, policy_type) -> dict:
 
     return policies
 
-async def add_policy(policy_data : dict) -> dict:
-    policy_collection = db_connection()
-    policy_collection.insert_one(policy_data)
-
-async def delete_policy_by(policy_data : dict):
-    policy_collection = db_connection()
-    condition = {
-        "p_name" : policy_data['p_name'],
-        "policy_id" : policy_data['policy_id']
-    }
-    policy_collection.delete_many(condition)
-
 async def retrieve_details_by_name(p_name) -> dict:
     policy_collection = db_connection()
     details = []
@@ -99,10 +87,52 @@ async def retrieve_details_by_id(policy_id) -> dict:
 
     return details
 
-async def retrieve_all_details() -> dict:
+async def add_policy(policy_data : dict) -> dict:
     policy_collection = db_connection()
-    details = []
-    async for detail in policy_collection.find():
-        details.append(policy_detail_helper(detail))
+    policy_collection.insert_one(policy_data)
 
-    return details
+async def delete_policy_by(policy_data : dict):
+    policy_collection = db_connection()
+    condition = {
+        "p_name" : policy_data['p_name'],
+        "policy_id" : policy_data['policy_id']
+    }
+    policy_collection.delete_many(condition)
+
+async def delete_policy_by_id(policy : str):
+    policy_collection = db_connection()
+    condition = {
+        "policy_id" : policy
+    }
+    policy_collection.delete_many(condition)
+
+async def delete_policy_by_name(policy : str):
+    policy_collection = db_connection()
+    condition = {
+        "p_name" : policy
+    }
+    policy_collection.delete_many(condition)
+
+async def update_policy(policy_data : dict):
+    policy_collection = db_connection()
+    condition_update = {
+        "$set" : policy_data
+    }
+    condition_name = {
+        "p_name": policy_data['p_name']
+    }
+    condition_id = {
+        "policy_id": policy_data['policy_id']
+    }
+    policy = await policy_collection.find_one(condition_name)
+
+    if policy:
+        policy_collection.update_one(condition_name, condition_update)
+        return True
+    else:
+        policy = await policy_collection.find_one(condition_id)
+        if policy:
+            policy_collection.update_one(condition_id, condition_update)
+            return True
+        return False
+
