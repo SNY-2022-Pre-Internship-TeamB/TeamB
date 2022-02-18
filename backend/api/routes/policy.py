@@ -33,7 +33,7 @@ async def post_policy(background_tasks : BackgroundTasks, policy : PolicyNameSch
     policy = jsonable_encoder(policy)
     background_tasks.add_task(add_policy, policy)
 
-    return asyncResponse(202, "GET", "http://localhost:8000/policies/{}/details".format(policy['policy_id']))
+    return asyncResponse(202, "GET", "http://localhost:8000/policies/{}".format(policy['policy_id']))
 
 @router.delete("", status_code = status.HTTP_204_NO_CONTENT, response_description = "Successfully deleted")
 async def delete_policy(background_tasks : BackgroundTasks, policy : PolicyNameSchema = Body(...)):
